@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksStore", "BooksStore\BooksStore.csproj", "{5592924D-7A4F-42C2-8ECA-350737264E18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksStore", "BooksStore\BooksStore.csproj", "{5592924D-7A4F-42C2-8ECA-350737264E18}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts\Contracts.csproj", "{1107DCF5-1849-45F9-8ECC-0173B3F8B5B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerService\LoggerService\LoggerService.csproj", "{2D6DE6A5-FC5B-42B7-88A2-7B0261F1715B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{5592924D-7A4F-42C2-8ECA-350737264E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5592924D-7A4F-42C2-8ECA-350737264E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5592924D-7A4F-42C2-8ECA-350737264E18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1107DCF5-1849-45F9-8ECC-0173B3F8B5B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1107DCF5-1849-45F9-8ECC-0173B3F8B5B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1107DCF5-1849-45F9-8ECC-0173B3F8B5B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1107DCF5-1849-45F9-8ECC-0173B3F8B5B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6DE6A5-FC5B-42B7-88A2-7B0261F1715B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6DE6A5-FC5B-42B7-88A2-7B0261F1715B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6DE6A5-FC5B-42B7-88A2-7B0261F1715B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6DE6A5-FC5B-42B7-88A2-7B0261F1715B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
