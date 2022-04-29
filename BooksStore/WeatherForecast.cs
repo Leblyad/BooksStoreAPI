@@ -10,19 +10,25 @@ namespace BooksStore
     public class WeatherForecast : ControllerBase
     {
         private ILoggerManager _logger;
+        private readonly IRepositoryManager _repository;
 
-        public WeatherForecast(ILoggerManager logger)
+        public WeatherForecast(ILoggerManager logger, IRepositoryManager repository)
         {
             _logger = logger;
+            _repository = repository;
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<IEnumerable<string>> Get()
         {
-            _logger.LogInfo("Here is info message from our values conroller.");
-            _logger.LogDebug("Here is debug message from our values conroller.");
-            _logger.LogWarn("Here is warn message from our values conroller.");
-            _logger.LogError("Here is erro message from our values conroller.");
+            try
+            {
+                _repository.Book.ToString();
+                _repository.Genre.ToString();
+                _repository.Author.ToString();
+            }
+            catch
+            { };
 
             return new string[] { "value1", "value2" };
         }
