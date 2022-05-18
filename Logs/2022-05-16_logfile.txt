@@ -1,0 +1,15 @@
+2022-05-16 18:30:19.2696 ERROR Something went wrong in the GetBooks action AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+List`1 -> IEnumerable`1
+System.Collections.Generic.List`1[[Entities.Models.Book, Entities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] -> System.Collections.Generic.IEnumerable`1[[Entities.DataTransferObject.BookDto, Entities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]
+ ---> AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Book -> BookDto
+Entities.Models.Book -> Entities.DataTransferObject.BookDto
+   at lambda_method51(Closure , Book , BookDto , ResolutionContext )
+   at lambda_method50(Closure , Object , IEnumerable`1 , ResolutionContext )
+   --- End of inner exception stack trace ---
+   at lambda_method50(Closure , Object , IEnumerable`1 , ResolutionContext )
+   at BooksStore.Controllers.BooksController.GetBooks() in D:\Something\BooksStore\BooksStore\Controllers\BooksController.cs:line 36

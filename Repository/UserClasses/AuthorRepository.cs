@@ -4,6 +4,7 @@ using System.Text;
 using Entities.Models;
 using Contracts.Repositories;
 using Entities;
+using System.Linq;
 
 namespace Repository.UserClasses
 {
@@ -12,5 +13,10 @@ namespace Repository.UserClasses
         public AuthorRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         { }
+
+        public IEnumerable<Author> GetAllAuthors(bool trackChanges) =>
+            FindAll(trackChanges)
+            .OrderBy(a => a.Surname)
+            .ToList();
     }
 }
