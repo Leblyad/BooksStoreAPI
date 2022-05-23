@@ -14,9 +14,15 @@ namespace Repository.UserClasses
             : base(repositoryContext)
         { }
 
+        public void CreateAuthor(Author author) => Create(author);
+
         public IEnumerable<Author> GetAllAuthors(bool trackChanges) =>
             FindAll(trackChanges)
             .OrderBy(a => a.Surname)
             .ToList();
+
+        public Author GetAuthor(int AuthorId, bool trackChanges) =>
+            FindByCondition(a => a.Id.Equals(AuthorId), trackChanges)
+            .SingleOrDefault();
     }
 }

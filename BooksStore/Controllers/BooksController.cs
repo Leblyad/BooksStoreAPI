@@ -8,6 +8,8 @@ using Contracts;
 using Entities.DataTransferObject;
 using System.Linq;
 using AutoMapper;
+using Entities.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace BooksStore.Controllers
 {
@@ -68,6 +70,171 @@ namespace BooksStore.Controllers
                 _logger.LogError($"Something went wrong in {nameof(GetBook)} action {ex}");
 
                 return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpGet("collection/({ids})", Name = "BookCollection")]
+        public IActionResult GetBookCollection(IEnumerable<int> ids)
+        {
+            try
+            {
+                if(ids == null)
+                {
+                    _logger.LogError("Parametr is null.");
+                    return BadRequest("Parametr ids is null.");
+                }
+
+                var bookEntities = _repository.Book.GetBooksByIds(ids, trackChanges: false);
+
+                if(ids.Count() != bookEntities.Count())
+                {
+                    _logger.LogInfo("Some ids are not valid in collection.");
+                    return NotFound();
+                }
+
+                var booksToReturn = _mapper.Map<IEnumerable<BookDto>>(bookEntities);
+
+                return Ok(booksToReturn);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Something went wrong in {nameof(GetBookCollection)} action {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpGet("{id}/authors")]
+        public IActionResult GetAuthorsForBook(int id)
+        {
+            try
+            {
+
+            }
+            catch(Exception ex)
+            {
+
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateBook([FromBody]BookForCreationDto book)
+        {
+            try
+            {
+                if(book == null)
+                {
+                    _logger.LogError("BookForCreationDto object sent from client is null.");
+
+                    return BadRequest("BookForCreationDto object in null.");
+                }
+
+                var bookEntity = _mapper.Map<Book>(book);
+
+                _repository.Book.CreateBook(bookEntity);
+                _repository.Save();
+
+                var bookToReturn = _mapper.Map<BookDto>(bookEntity);
+
+                return CreatedAtRoute("BookById", new { id = bookToReturn.Id }, bookToReturn);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Something went wrong in {nameof(GetBook)} action {ex}");
+
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpPost("collection")]
+        public IActionResult CreateBookCollection([FromBody] IEnumerable<BookForCreationDto> bookCollection)
+        {
+            try
+            {
+                if(bookCollection == null)
+                {
+                    _logger.LogError("Book collection sent from client is null.");
+                    return BadRequest("Book collection is null");
+                }
+
+                var bookEntities = _mapper.Map<IEnumerable<Book>>(bookCollection);
+                foreach(var book in bookEntities)
+                {
+                    _repository.Book.CreateBook(book);
+                }
+
+                _repository.Save();
+
+                var bookCollectionToReturn = _mapper.Map<IEnumerable<BookDto>>(bookEntities);
+                var ids = string.Join(" ", bookCollectionToReturn.Select(b => b.Id));
+
+                return CreatedAtRoute("BookCollection", new { ids }, bookCollectionToReturn);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Something went wrong in {nameof(CreateBookCollection)} action {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteBook(int id)
+        {
+            try
+            {
+                var book = _repository.Book.GetBook(id, trackChanges: false);
+
+                if(book == null)
+                {
+                    _logger.LogError($"Book with id: {id} doesn't exist in the database.");
+                    return NotFound();
+                }
+
+                _repository.Book.DeleteBook(book);
+                _repository.Save();
+
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Something went wrong in {nameof(DeleteBook)} action {ex}");
+                return StatusCode(500, "Internal server error.");
+            };
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateBook(int id, [FromBody] JsonPatchDocument<BookForUpdateDto> patchDoc)
+        {
+            try
+            {
+                if(patchDoc == null)
+                {
+
+                    return BadRequest();
+                }
+
+                var bookEntity = _repository.Book.GetBook(id, trackChanges: true);
+
+                if(bookEntity == null)
+                {
+
+                    return NotFound();
+                }
+
+                var bookToPatch = _mapper.Map<BookForUpdateDto>(bookEntity);
+
+                patchDoc.ApplyTo(bookToPatch);
+
+                _mapper.Map(bookToPatch, bookEntity);
+
+                _repository.Save();
+
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Something went wrong in {nameof(PartiallyUpdateBook)} action {ex}");
+                return StatusCode(500);
             }
         }
     }

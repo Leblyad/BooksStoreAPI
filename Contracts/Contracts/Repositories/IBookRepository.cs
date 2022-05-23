@@ -10,5 +10,7 @@ namespace Contracts.Repositories
         IEnumerable<Book> GetAllBooks(bool trackChanges);
         Book GetBook(int BookId, bool trackChanges);
         void CreateBook(Book book);
+        IEnumerable<Book> GetBooksByIds(IEnumerable<int> ids, bool trackChanges);
+        void DeleteBook(Book book);
     }
 }

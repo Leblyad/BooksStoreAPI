@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Entities.DataTransferObject
 {
-    public class BookForCreationDto
+    public class AuthorForCreationDto
     {
         public string Name { get; set; }
-        public IEnumerable<AuthorForCreationDto> Authors { get; set; }
+        public string Surname { get; set; }
+        public string Fathername { get; set; }
     }
 }

@@ -17,6 +17,10 @@ namespace BooksStore
                 opt => opt.MapFrom(x => string.Join(" ", x.Name[0] + ".", x.Surname[0] + ".")));
 
             CreateMap<Book, BookDto>();
+
+            CreateMap<BookForCreationDto, Book>();
+
+            CreateMap<BookForUpdateDto, Book>().ReverseMap();
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,10 @@ namespace BooksStore
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
-            }).AddXmlDataContractSerializerFormatters();
+                config.SuppressAsyncSuffixInActionNames = false;
+            })
+                .AddNewtonsoftJson()
+                .AddXmlDataContractSerializerFormatters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
