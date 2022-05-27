@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksStore", "BooksStore\BooksStore.csproj", "{5592924D-7A4F-42C2-8ECA-350737264E18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksStoreAPI", "BooksStore\BooksStoreAPI.csproj", "{5592924D-7A4F-42C2-8ECA-350737264E18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts\Contracts.csproj", "{1107DCF5-1849-45F9-8ECC-0173B3F8B5B5}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities\Entities.csproj", "{B77444A4-3F1F-4C3C-8508-0F78F0408775}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{284C84C5-ADF4-4554-968F-032753EDF717}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{284C84C5-ADF4-4554-968F-032753EDF717}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

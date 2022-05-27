@@ -42,6 +42,7 @@ namespace BooksStore
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+            services.ConfigureVersioning();
 
             services.AddControllers(config =>
             {
