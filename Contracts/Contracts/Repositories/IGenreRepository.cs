@@ -8,11 +8,11 @@ namespace Contracts.Repositories
 {
     public interface IGenreRepository
     {
-        Task<Genre> GetGenre(int id, bool trackChanges);
+        Task<Genre> GetGenreAsync(int id, bool trackChanges);
         void CreateGenre(Genre genre);
         void DeleteGenre(Genre genre);
-        Task<IEnumerable<Genre>> GetGenresByIds(IEnumerable<int> ids, bool trackChanges);
-        Task<IEnumerable<Genre>> GetAllGenres(bool trackChanges);
+        Task<IEnumerable<Genre>> GetGenresByIdsAsync(IEnumerable<int> ids, bool trackChanges);
+        Task<IEnumerable<Genre>> GetAllGenresAsync(bool trackChanges);
 
     }
 }

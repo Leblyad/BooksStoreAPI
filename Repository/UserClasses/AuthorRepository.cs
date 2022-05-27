@@ -20,18 +20,18 @@ namespace Repository.UserClasses
 
         public void DeleteAuthor(Author author) => Delete(author);
 
-        public async Task<IEnumerable<Author>> GetAllAuthors(bool trackChanges) =>
+        public async Task<IEnumerable<Author>> GetAllAuthorsAsync(bool trackChanges) =>
             await FindAll(trackChanges)
             .Include(a => a.Books)
             .OrderBy(a => a.Surname)
             .ToListAsync();
 
-        public async Task<Author> GetAuthor(int AuthorId, bool trackChanges) =>
+        public async Task<Author> GetAuthorAsync(int AuthorId, bool trackChanges) =>
             await FindByCondition(a => a.Id.Equals(AuthorId), trackChanges)
             .Include(a => a.Books)
             .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Author>> GetAuthorsByIds(IEnumerable<int> ids, bool trackChanges) =>
+        public async Task<IEnumerable<Author>> GetAuthorsByIdsAsync(IEnumerable<int> ids, bool trackChanges) =>
             await FindByCondition(a => ids.Contains(a.Id), trackChanges)
             .Include(a => a.Books)
             .ToListAsync();

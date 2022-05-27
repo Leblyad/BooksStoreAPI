@@ -29,11 +29,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBooks()
+        public async Task<IActionResult> GetBooks()
         {
             try
             {
-                var books = _repository.Book.GetAllBooks(trackChanges: false);
+                var books = await _repository.Book.GetAllBooksAsync(trackChanges: false);
 
                 var booksDto = _mapper.Map<IEnumerable<BookDto>>(books);
 
@@ -47,11 +47,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet("{id}", Name = "BookById")]
-        public IActionResult GetBook(int Id)
+        public async Task<IActionResult> GetBook(int Id)
         {
             try
             {
-                var book = _repository.Book.GetBook(Id, trackChanges: false);
+                var book = await _repository.Book.GetBookAsync(Id, trackChanges: false);
 
                 var bookDto = _mapper.Map<BookDto>(book);
 
@@ -74,7 +74,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet("collection/({ids})", Name = "BookCollection")]
-        public IActionResult GetBookCollection(IEnumerable<int> ids)
+        public async Task<IActionResult> GetBookCollection(IEnumerable<int> ids)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace BooksStore.Controllers
                     return BadRequest("Parametr ids is null.");
                 }
 
-                var bookEntities = _repository.Book.GetBooksByIds(ids, trackChanges: false);
+                var bookEntities = await _repository.Book.GetBooksByIdsAsync(ids, trackChanges: false);
 
                 if(ids.Count() != bookEntities.Count())
                 {
@@ -104,7 +104,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBook([FromBody]BookForCreationDto book)
+        public async Task<IActionResult> CreateBook([FromBody]BookForCreationDto book)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace BooksStore.Controllers
                 var bookEntity = _mapper.Map<Book>(book);
 
                 _repository.Book.CreateBook(bookEntity);
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 var bookToReturn = _mapper.Map<BookDto>(bookEntity);
 
@@ -139,7 +139,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateBookCollection([FromBody] IEnumerable<BookForCreationDto> bookCollection)
+        public async Task<IActionResult> CreateBookCollection([FromBody] IEnumerable<BookForCreationDto> bookCollection)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace BooksStore.Controllers
                     _repository.Book.CreateBook(book);
                 }
 
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 var bookCollectionToReturn = _mapper.Map<IEnumerable<BookDto>>(bookEntities);
                 var ids = string.Join(" ", bookCollectionToReturn.Select(b => b.Id));
@@ -170,11 +170,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteBook(int id)
+        public async Task<IActionResult> DeleteBook(int id)
         {
             try
             {
-                var book = _repository.Book.GetBook(id, trackChanges: false);
+                var book = await _repository.Book.GetBookAsync(id, trackChanges: false);
 
                 if(book == null)
                 {
@@ -183,7 +183,7 @@ namespace BooksStore.Controllers
                 }
 
                 _repository.Book.DeleteBook(book);
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 return NoContent();
             }
@@ -195,7 +195,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartiallyUpdateBook(int id, [FromBody] JsonPatchDocument<BookForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdateBook(int id, [FromBody] JsonPatchDocument<BookForUpdateDto> patchDoc)
         {
             try
             {
@@ -205,7 +205,7 @@ namespace BooksStore.Controllers
                     return BadRequest();
                 }
 
-                var bookEntity = _repository.Book.GetBook(id, trackChanges: true);
+                var bookEntity = await _repository.Book.GetBookAsync(id, trackChanges: true);
 
                 if(bookEntity == null)
                 {
@@ -227,9 +227,9 @@ namespace BooksStore.Controllers
 
                 _mapper.Map(bookToPatch, bookEntity);
 
-                MapGenresAndAuthors(bookEntity, bookToPatch);
+                await MapGenresAndAuthors(bookEntity, bookToPatch);
 
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 return NoContent();
             }
@@ -240,15 +240,15 @@ namespace BooksStore.Controllers
             }
         }
 
-        private void MapGenresAndAuthors(Book bookEntity, BookForUpdateDto bookToPatch)
+        private async Task MapGenresAndAuthors(Book bookEntity, BookForUpdateDto bookToPatch)
         {
-            var authors = _repository.Author.GetAuthorsByIds(bookToPatch.AuthorsIds, trackChanges: false).ToList();
+            var authors = await _repository.Author.GetAuthorsByIdsAsync(bookToPatch.AuthorsIds, trackChanges: false);
 
-            bookEntity.Authors = authors;
+            bookEntity.Authors = authors.ToList();
 
-            var genres = _repository.Genre.GetGenresByIds(bookToPatch.GenresIds, trackChanges: false).ToList();
+            var genres = await _repository.Genre.GetGenresByIdsAsync(bookToPatch.GenresIds, trackChanges: false);
 
-            bookEntity.Genres = genres;
+            bookEntity.Genres = genres.ToList();
         }
     }
 }

@@ -6,6 +6,7 @@ using Contracts.Repositories;
 using Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Repository.UserClasses
 {
@@ -19,20 +20,20 @@ namespace Repository.UserClasses
 
         public void DeleteGenre(Genre genre) => Delete(genre);
 
-        public IEnumerable<Genre> GetAllGenres(bool trackChanges) =>
-            FindAll(trackChanges)
+        public async Task<IEnumerable<Genre>> GetAllGenresAsync(bool trackChanges) =>
+            await FindAll(trackChanges)
             .Include(g => g.Books)
             .OrderBy(g => g.Name)
-            .ToList();
+            .ToListAsync();
 
-        public Genre GetGenre(int id, bool trackChanges) =>
-            FindByCondition(g => g.Id.Equals(id), trackChanges)
+        public async Task<Genre> GetGenreAsync(int id, bool trackChanges) =>
+            await FindByCondition(g => g.Id.Equals(id), trackChanges)
             .Include(g => g.Books)
-            .SingleOrDefault();
+            .SingleOrDefaultAsync();
 
-        public IEnumerable<Genre> GetGenresByIds(IEnumerable<int> ids, bool trackChanges) =>
-            FindByCondition(g => ids.Contains(g.Id), trackChanges)
-           .Include(g => g.Books)
-            .ToList();
+        public async Task<IEnumerable<Genre>> GetGenresByIdsAsync(IEnumerable<int> ids, bool trackChanges) =>
+            await FindByCondition(g => ids.Contains(g.Id), trackChanges)
+            .Include(g => g.Books)
+            .ToListAsync();
     }
 }

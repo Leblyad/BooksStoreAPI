@@ -28,11 +28,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGenres()
+        public async Task<IActionResult> GetGenres()
         {
             try
             {
-                var genres = _repository.Genre.GetAllGenres(trackChanges: false);
+                var genres = await _repository.Genre.GetAllGenresAsync(trackChanges: false);
 
                 var genresDto = _mapper.Map<IEnumerable<GenreDto>>(genres);
 
@@ -47,11 +47,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet("{id}", Name = "GenreById")]
-        public IActionResult GetGenre(int id)
+        public async Task<IActionResult> GetGenre(int id)
         {
             try
             {
-                var gerne = _repository.Genre.GetGenre(id, trackChanges: false);
+                var gerne = await _repository.Genre.GetGenreAsync(id, trackChanges: false);
 
                 var genreDto = _mapper.Map<GenreDto>(gerne);
 
@@ -74,7 +74,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet("collection/({ids})", Name = "GenreCollection")]
-        public IActionResult GetGenreCollection(IEnumerable<int> ids)
+        public async Task<IActionResult> GetGenreCollection(IEnumerable<int> ids)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace BooksStore.Controllers
                     return BadRequest("Parametr ids is null.");
                 }
 
-                var genreEntities = _repository.Genre.GetGenresByIds(ids, trackChanges: false);
+                var genreEntities = await _repository.Genre.GetGenresByIdsAsync(ids, trackChanges: false);
 
                 if (ids.Count() != genreEntities.Count())
                 {
@@ -104,7 +104,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateGenre([FromBody] GenreForCreationDto genre)
+        public async Task<IActionResult> CreateGenre([FromBody] GenreForCreationDto genre)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace BooksStore.Controllers
                 var genreEntity = _mapper.Map<Genre>(genre);
 
                 _repository.Genre.CreateGenre(genreEntity);
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 var genreToReturn = _mapper.Map<GenreDto>(genreEntity);
 
@@ -139,7 +139,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateGenreCollection([FromBody] IEnumerable<GenreForCreationDto> genreCollection)
+        public async Task<IActionResult> CreateGenreCollection([FromBody] IEnumerable<GenreForCreationDto> genreCollection)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace BooksStore.Controllers
                     _repository.Genre.CreateGenre(genre);
                 }
 
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 var genreCollectionToReturn = _mapper.Map<IEnumerable<GenreDto>>(genreEntities);
                 var ids = string.Join(" ", genreCollectionToReturn.Select(b => b.Id));
@@ -176,11 +176,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteGenre(int id)
+        public async Task<IActionResult> DeleteGenre(int id)
         {
             try
             {
-                var genre = _repository.Genre.GetGenre(id, trackChanges: false);
+                var genre = await _repository.Genre.GetGenreAsync(id, trackChanges: false);
 
                 if (genre == null)
                 {
@@ -189,7 +189,7 @@ namespace BooksStore.Controllers
                 }
 
                 _repository.Genre.DeleteGenre(genre);
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 return NoContent();
             }
@@ -201,7 +201,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartiallyUpdateGenre(int id, [FromBody] JsonPatchDocument<GenreForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdateGenre(int id, [FromBody] JsonPatchDocument<GenreForUpdateDto> patchDoc)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace BooksStore.Controllers
                     return BadRequest();
                 }
 
-                var genreEntity = _repository.Genre.GetGenre(id, trackChanges: true);
+                var genreEntity = await _repository.Genre.GetGenreAsync(id, trackChanges: true);
 
                 if (genreEntity == null)
                 {
@@ -233,9 +233,9 @@ namespace BooksStore.Controllers
 
                 _mapper.Map(genreToPatch, genreEntity);
 
-                MapBooksForUpdateGenre(genreEntity, genreToPatch);
+                await MapBooksForUpdateGenre(genreEntity, genreToPatch);
 
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 return NoContent();
             }
@@ -246,11 +246,11 @@ namespace BooksStore.Controllers
             }
         }
 
-        private void MapBooksForUpdateGenre(Genre genreEntity, GenreForUpdateDto genreToPatch)
+        private async Task MapBooksForUpdateGenre(Genre genreEntity, GenreForUpdateDto genreToPatch)
         {
-            var books = _repository.Book.GetBooksByIds(genreToPatch.BooksIds, trackChanges: false).ToList();
+            var books = await _repository.Book.GetBooksByIdsAsync(genreToPatch.BooksIds, trackChanges: false);
 
-            genreEntity.Books = books;
+            genreEntity.Books = books.ToList();
         }
     }
 }

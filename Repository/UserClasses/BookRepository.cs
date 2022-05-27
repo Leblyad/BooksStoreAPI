@@ -19,20 +19,20 @@ namespace Repository.UserClasses
 
         public void CreateBook(Book book) => Create(book);
 
-        public async Task<IEnumerable<Book>> GetAllBooks(bool trackChanges) =>
+        public async Task<IEnumerable<Book>> GetAllBooksAsync(bool trackChanges) =>
             await FindAll(trackChanges)
             .Include(b => b.Authors)
             .Include(b => b.Genres)
             .OrderBy(c => c.Name)
             .ToListAsync();
 
-        public async Task<Book> GetBook(int BookId, bool trackChanges) =>
+        public async Task<Book> GetBookAsync(int BookId, bool trackChanges) =>
             await FindByCondition(b => b.Id.Equals(BookId), trackChanges)
             .Include(b => b.Authors)
             .Include(b => b.Genres)
             .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Book>> GetBooksByIds(IEnumerable<int> ids, bool trackChanges) =>
+        public async Task<IEnumerable<Book>> GetBooksByIdsAsync(IEnumerable<int> ids, bool trackChanges) =>
             await FindByCondition(b => ids.Contains(b.Id), trackChanges)
             .Include(b => b.Authors)
             .Include(b => b.Genres)

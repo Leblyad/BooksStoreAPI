@@ -28,11 +28,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAuthors()
+        public async Task<IActionResult> GetAuthors()
         {
             try
             {
-                var authors = _repository.Author.GetAllAuthors(trackChanges: false);
+                var authors = await _repository.Author.GetAllAuthorsAsync(trackChanges: false);
 
                 var authorsDto = _mapper.Map<IEnumerable<AuthorDto>>(authors);
 
@@ -47,11 +47,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet("{id}", Name = "AuthorById")]
-        public IActionResult GetAuthor(int Id)
+        public async Task<IActionResult> GetAuthor(int Id)
         {
             try
             {
-                var author = _repository.Author.GetAuthor(Id, trackChanges: false);
+                var author = await _repository.Author.GetAuthorAsync(Id, trackChanges: false);
 
                 var authorDto = _mapper.Map<AuthorDto>(author);
 
@@ -74,7 +74,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpGet("collection/({ids})", Name = "AuthorCollection")]
-        public IActionResult GetAuthorCollection(IEnumerable<int> ids)
+        public async Task<IActionResult> GetAuthorCollection(IEnumerable<int> ids)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace BooksStore.Controllers
                     return BadRequest("Parametr ids is null.");
                 }
 
-                var authorEntities = _repository.Author.GetAuthorsByIds(ids, trackChanges: false);
+                var authorEntities = await _repository.Author.GetAuthorsByIdsAsync(ids, trackChanges: false);
 
                 if (ids.Count() != authorEntities.Count())
                 {
@@ -104,7 +104,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBook([FromBody] AuthorForCreationDto author)
+        public async Task<IActionResult> CreateBook([FromBody] AuthorForCreationDto author)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace BooksStore.Controllers
                 var authorEntity = _mapper.Map<Author>(author);
 
                 _repository.Author.CreateAuthor(authorEntity);
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
 
@@ -139,7 +139,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateAuthorCollection([FromBody] IEnumerable<AuthorForCreationDto> authorCollection)
+        public async Task<IActionResult> CreateAuthorCollection([FromBody] IEnumerable<AuthorForCreationDto> authorCollection)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace BooksStore.Controllers
                     _repository.Author.CreateAuthor(author);
                 }
 
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 var authorCollectionToReturn = _mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
                 var ids = string.Join(" ", authorCollectionToReturn.Select(b => b.Id));
@@ -176,11 +176,11 @@ namespace BooksStore.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteAuthor(int id)
+        public async Task<IActionResult> DeleteAuthor(int id)
         {
             try
             {
-                var author = _repository.Author.GetAuthor(id, trackChanges: false);
+                var author = await _repository.Author.GetAuthorAsync(id, trackChanges: false);
 
                 if (author == null)
                 {
@@ -189,7 +189,7 @@ namespace BooksStore.Controllers
                 }
 
                 _repository.Author.DeleteAuthor(author);
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 return NoContent();
             }
@@ -201,7 +201,7 @@ namespace BooksStore.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartiallyUpdateAuthor(int id, [FromBody] JsonPatchDocument<AuthorForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdateAuthor(int id, [FromBody] JsonPatchDocument<AuthorForUpdateDto> patchDoc)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace BooksStore.Controllers
                     return BadRequest();
                 }
 
-                var authorEntity = _repository.Author.GetAuthor(id, trackChanges: true);
+                var authorEntity = await _repository.Author.GetAuthorAsync(id, trackChanges: true);
 
                 if (authorEntity == null)
                 {
@@ -233,9 +233,9 @@ namespace BooksStore.Controllers
 
                 _mapper.Map(authorToPatch, authorEntity);
 
-                MapBooksForUpdateAuthor(authorEntity, authorToPatch);
+                await MapBooksForUpdateAuthor(authorEntity, authorToPatch);
 
-                _repository.Save();
+                await _repository.SaveAsync();
 
                 return NoContent();
             }
@@ -246,11 +246,11 @@ namespace BooksStore.Controllers
             }
         }
 
-        private void MapBooksForUpdateAuthor(Author authorEntity, AuthorForUpdateDto authorToPatch)
+        private async Task MapBooksForUpdateAuthor(Author authorEntity, AuthorForUpdateDto authorToPatch)
         {
-            var books = _repository.Book.GetBooksByIds(authorToPatch.BooksIds, trackChanges: false).ToList();
+            var books = await _repository.Book.GetBooksByIdsAsync(authorToPatch.BooksIds, trackChanges: false);
 
-            authorEntity.Books = books;
+            authorEntity.Books = books.ToList();
         }
     }
 }
