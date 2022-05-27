@@ -1,0 +1,12 @@
+2022-05-23 17:32:59.9752 ERROR Something went wrong in PartiallyUpdateBook action Microsoft.AspNetCore.JsonPatch.Exceptions.JsonPatchException: The value '1' is invalid for target location.
+   at Microsoft.AspNetCore.JsonPatch.Internal.ErrorReporter.<>c.<.cctor>b__1_0(JsonPatchError error)
+   at Microsoft.AspNetCore.JsonPatch.Adapters.ObjectAdapter.Add(String path, Object value, Object objectToApplyTo, Operation operation)
+   at Microsoft.AspNetCore.JsonPatch.Adapters.ObjectAdapter.Add(Operation operation, Object objectToApplyTo)
+   at Microsoft.AspNetCore.JsonPatch.Operations.Operation`1.Apply(TModel objectToApplyTo, IObjectAdapter adapter)
+   at Microsoft.AspNetCore.JsonPatch.JsonPatchDocument`1.ApplyTo(TModel objectToApplyTo, IObjectAdapter adapter)
+   at Microsoft.AspNetCore.JsonPatch.JsonPatchDocument`1.ApplyTo(TModel objectToApplyTo)
+   at BooksStore.Controllers.BooksController.PartiallyUpdateBook(Int32 id, JsonPatchDocument`1 patchDoc) in D:\Something\BooksStore\BooksStore\Controllers\BooksController.cs:line 212
+2022-05-23 22:55:58.4638 ERROR Something went wrong in PartiallyUpdateBook action System.NotImplementedException: The method or operation is not implemented.
+   at Repository.UserClasses.AuthorRepository.GetAuthorsByIds(IEnumerable`1 ids, Boolean trackChanges) in D:\Something\BooksStore\Repository\UserClasses\AuthorRepository.cs:line 35
+   at BooksStore.Controllers.BooksController.MapGenresAndAuthors(Book bookEntity, BookForUpdateDto bookToPatch) in D:\Something\BooksStore\BooksStore\Controllers\BooksController.cs:line 231
+   at BooksStore.Controllers.BooksController.PartiallyUpdateBook(Int32 id, JsonPatchDocument`1 patchDoc) in D:\Something\BooksStore\BooksStore\Controllers\BooksController.cs:line 216

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,5 +9,7 @@ namespace Entities.DataTransferObject
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public List<AuthorDto> Authors { get; set; }
+        public List<GenreDto> Genres { get; set; }
     }
 }

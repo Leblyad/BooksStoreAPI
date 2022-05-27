@@ -38,6 +38,10 @@ namespace BooksStore
             services.ConfigureSqlContext(Configuration);
             services.ConfigureRepositoryManager();
             services.AddAutoMapper(typeof(Startup));
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddControllers(config =>
             {
@@ -45,7 +49,11 @@ namespace BooksStore
                 config.ReturnHttpNotAcceptable = true;
                 config.SuppressAsyncSuffixInActionNames = false;
             })
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = 
+                    Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                })
                 .AddXmlDataContractSerializerFormatters();
         }
 

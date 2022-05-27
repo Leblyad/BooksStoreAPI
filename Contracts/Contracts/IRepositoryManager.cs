@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Contracts.Repositories;
 
 namespace Contracts
@@ -10,6 +11,6 @@ namespace Contracts
         IBookRepository Book { get; }
         IGenreRepository Genre { get; }
         IAuthorRepository Author { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

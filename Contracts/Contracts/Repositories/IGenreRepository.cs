@@ -2,16 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Contracts.Repositories
 {
     public interface IGenreRepository
     {
-        Genre GetGenre(int id, bool trackChanges);
+        Task<Genre> GetGenre(int id, bool trackChanges);
         void CreateGenre(Genre genre);
         void DeleteGenre(Genre genre);
-        IEnumerable<Genre> GetGenresByIds(IEnumerable<int> ids, bool trackChanges);
-        IEnumerable<Genre> GetAllGenres(bool trackChanges);
+        Task<IEnumerable<Genre>> GetGenresByIds(IEnumerable<int> ids, bool trackChanges);
+        Task<IEnumerable<Genre>> GetAllGenres(bool trackChanges);
 
     }
 }

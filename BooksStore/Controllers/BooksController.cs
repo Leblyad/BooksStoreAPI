@@ -103,20 +103,6 @@ namespace BooksStore.Controllers
             }
         }
 
-        [HttpGet("{id}/authors")]
-        public IActionResult GetAuthorsForBook(int id)
-        {
-            try
-            {
-
-            }
-            catch(Exception ex)
-            {
-
-                return StatusCode(500);
-            }
-        }
-
         [HttpPost]
         public IActionResult CreateBook([FromBody]BookForCreationDto book)
         {
@@ -127,6 +113,12 @@ namespace BooksStore.Controllers
                     _logger.LogError("BookForCreationDto object sent from client is null.");
 
                     return BadRequest("BookForCreationDto object in null.");
+                }
+
+                if(!ModelState.IsValid)
+                {
+                    _logger.LogError("Invalid model state for the BookForCreationDto object.");
+                    return UnprocessableEntity(ModelState);
                 }
 
                 var bookEntity = _mapper.Map<Book>(book);
@@ -140,7 +132,7 @@ namespace BooksStore.Controllers
             }
             catch(Exception ex)
             {
-                _logger.LogError($"Something went wrong in {nameof(GetBook)} action {ex}");
+                _logger.LogError($"Something went wrong in {nameof(CreateBook)} action {ex}");
 
                 return StatusCode(500, "Internal server error.");
             }
@@ -225,7 +217,17 @@ namespace BooksStore.Controllers
 
                 patchDoc.ApplyTo(bookToPatch);
 
+                TryValidateModel(bookToPatch);
+
+                if(!ModelState.IsValid)
+                {
+                    _logger.LogError("Invalid model state for the BookForUpdateDto object.");
+                    return UnprocessableEntity(ModelState);
+                }
+
                 _mapper.Map(bookToPatch, bookEntity);
+
+                MapGenresAndAuthors(bookEntity, bookToPatch);
 
                 _repository.Save();
 
@@ -236,6 +238,17 @@ namespace BooksStore.Controllers
                 _logger.LogError($"Something went wrong in {nameof(PartiallyUpdateBook)} action {ex}");
                 return StatusCode(500);
             }
+        }
+
+        private void MapGenresAndAuthors(Book bookEntity, BookForUpdateDto bookToPatch)
+        {
+            var authors = _repository.Author.GetAuthorsByIds(bookToPatch.AuthorsIds, trackChanges: false).ToList();
+
+            bookEntity.Authors = authors;
+
+            var genres = _repository.Genre.GetGenresByIds(bookToPatch.GenresIds, trackChanges: false).ToList();
+
+            bookEntity.Genres = genres;
         }
     }
 }

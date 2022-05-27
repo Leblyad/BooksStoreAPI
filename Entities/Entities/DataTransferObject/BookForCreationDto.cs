@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Entities.DataTransferObject
 {
-    public class BookForCreationDto
+    public class BookForCreationDto : BookForManipulationDto
     {
-        public string Name { get; set; }
-        public IEnumerable<AuthorForCreationDto> Authors { get; set; }
     }
 }

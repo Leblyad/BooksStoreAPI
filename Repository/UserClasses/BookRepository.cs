@@ -5,6 +5,8 @@ using Entities.Models;
 using Contracts.Repositories;
 using Entities;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Repository.UserClasses
 {
@@ -17,18 +19,24 @@ namespace Repository.UserClasses
 
         public void CreateBook(Book book) => Create(book);
 
-        public IEnumerable<Book> GetAllBooks(bool trackChanges) =>
-            FindAll(trackChanges)
+        public async Task<IEnumerable<Book>> GetAllBooks(bool trackChanges) =>
+            await FindAll(trackChanges)
+            .Include(b => b.Authors)
+            .Include(b => b.Genres)
             .OrderBy(c => c.Name)
-            .ToList();
+            .ToListAsync();
 
-        public Book GetBook(int BookId, bool trackChanges) =>
-            FindByCondition(b => b.Id.Equals(BookId), trackChanges)
-            .SingleOrDefault();
+        public async Task<Book> GetBook(int BookId, bool trackChanges) =>
+            await FindByCondition(b => b.Id.Equals(BookId), trackChanges)
+            .Include(b => b.Authors)
+            .Include(b => b.Genres)
+            .SingleOrDefaultAsync();
 
-        public IEnumerable<Book> GetBooksByIds(IEnumerable<int> ids, bool trackChanges) =>
-            FindByCondition(b => ids.Contains(b.Id), trackChanges)
-            .ToList();
+        public async Task<IEnumerable<Book>> GetBooksByIds(IEnumerable<int> ids, bool trackChanges) =>
+            await FindByCondition(b => ids.Contains(b.Id), trackChanges)
+            .Include(b => b.Authors)
+            .Include(b => b.Genres)
+            .ToListAsync();
 
         public void DeleteBook(Book book) => Delete(book);
     }

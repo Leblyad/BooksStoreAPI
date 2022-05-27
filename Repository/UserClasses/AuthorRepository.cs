@@ -5,6 +5,8 @@ using Entities.Models;
 using Contracts.Repositories;
 using Entities;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Repository.UserClasses
 {
@@ -16,13 +18,22 @@ namespace Repository.UserClasses
 
         public void CreateAuthor(Author author) => Create(author);
 
-        public IEnumerable<Author> GetAllAuthors(bool trackChanges) =>
-            FindAll(trackChanges)
-            .OrderBy(a => a.Surname)
-            .ToList();
+        public void DeleteAuthor(Author author) => Delete(author);
 
-        public Author GetAuthor(int AuthorId, bool trackChanges) =>
-            FindByCondition(a => a.Id.Equals(AuthorId), trackChanges)
-            .SingleOrDefault();
+        public async Task<IEnumerable<Author>> GetAllAuthors(bool trackChanges) =>
+            await FindAll(trackChanges)
+            .Include(a => a.Books)
+            .OrderBy(a => a.Surname)
+            .ToListAsync();
+
+        public async Task<Author> GetAuthor(int AuthorId, bool trackChanges) =>
+            await FindByCondition(a => a.Id.Equals(AuthorId), trackChanges)
+            .Include(a => a.Books)
+            .SingleOrDefaultAsync();
+
+        public async Task<IEnumerable<Author>> GetAuthorsByIds(IEnumerable<int> ids, bool trackChanges) =>
+            await FindByCondition(a => ids.Contains(a.Id), trackChanges)
+            .Include(a => a.Books)
+            .ToListAsync();
     }
 }

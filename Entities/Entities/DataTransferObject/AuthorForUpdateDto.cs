@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Entities.DataTransferObject
 {
-    class AuthorForUpdateDto
+    public class AuthorForUpdateDto : AuthorForManipulationDto
     {
+        public IEnumerable<int> BooksIds { get; set; }
     }
 }

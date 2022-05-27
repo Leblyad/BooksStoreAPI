@@ -5,11 +5,10 @@ using System.Text;
 
 namespace Entities.DataTransferObject
 {
-    public class BookForUpdateDto
+    public class BookForUpdateDto : BookForManipulationDto
     {
-        public string Name { get; set; }
-        //public IEnumerable<AuthorDto> Authors{get;set;}
-        //public IEnumerable<Genre> Genres { get; set; }
+        public IEnumerable<int> AuthorsIds { get;set;}
+        public IEnumerable<int> GenresIds { get; set; }
     }
 }
     

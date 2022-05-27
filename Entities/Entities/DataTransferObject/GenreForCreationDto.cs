@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Entities.DataTransferObject
 {
-    public class GenreForCreationDto
+    public class GenreForCreationDto : GenreForManipulationDto
     {
-        public string Name { get; set; }
     }
 }
