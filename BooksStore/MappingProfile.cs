@@ -35,6 +35,8 @@ namespace BooksStore
             CreateMap<Book, BookForUpdateDto>();
 
             CreateMap<BookForUpdateDto, Book>().ReverseMap();
+
+            CreateMap<UserForRegistrationDto, User>();
         }
     }
 }

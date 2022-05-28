@@ -43,6 +43,9 @@ namespace BooksStore
                 options.SuppressModelStateInvalidFilter = true;
             });
             services.ConfigureVersioning();
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
 
             services.AddControllers(config =>
             {
@@ -82,6 +85,7 @@ namespace BooksStore
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

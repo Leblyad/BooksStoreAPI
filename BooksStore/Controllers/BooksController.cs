@@ -10,6 +10,7 @@ using System.Linq;
 using AutoMapper;
 using Entities.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BooksStore.Controllers
 {
@@ -29,7 +30,7 @@ namespace BooksStore.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetBooks"), Authorize]
         public async Task<IActionResult> GetBooks()
         {
             try
