@@ -14,6 +14,10 @@ using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace BooksStore.Extensions
 {
@@ -102,5 +106,56 @@ namespace BooksStore.Extensions
 
         public static void ConfigureAuthenticationManager(this IServiceCollection services)
             => services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo { Title = "Books store API", Version = "v1" });
+                s.SwaggerDoc("v2", new OpenApiInfo { Title = "Books store API", Version = "v2",
+                    Description = "BooksStore API by Leblyad",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Kirill Lebedev",
+                        Email = "apk59955@gmail.com",
+                        Url = new Uri("https://t.me/x221456773"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "BooksStore API LICX",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
+
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Place to add JWT with Bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        { 
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer",
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+        }
     }
 }

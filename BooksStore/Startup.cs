@@ -46,6 +46,7 @@ namespace BooksStore
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
+            services.ConfigureSwagger();
 
             services.AddControllers(config =>
             {
@@ -72,6 +73,13 @@ namespace BooksStore
             {
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Books store API v1");
+                s.SwaggerEndpoint("/swagger/v2/swagger.json", "Books store API v2");
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -17,6 +17,7 @@ namespace BooksStore.Controllers
     [ApiVersion("1.0")]
     [Route("api/books")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class BooksController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -30,6 +31,10 @@ namespace BooksStore.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets the list of all books
+        /// </summary>
+        /// <returns>The books list</returns>
         [HttpGet(Name = "GetBooks"), Authorize]
         public async Task<IActionResult> GetBooks()
         {
@@ -105,7 +110,18 @@ namespace BooksStore.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a newly created book
+        /// </summary>
+        /// <param name="book"></param>
+        /// <returns>A newly created book</returns>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
+        /// <response code="422">If the model is invalid</response>
         [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
         public async Task<IActionResult> CreateBook([FromBody]BookForCreationDto book)
         {
             try
